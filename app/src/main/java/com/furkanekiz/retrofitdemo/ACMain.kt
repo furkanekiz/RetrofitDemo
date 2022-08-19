@@ -2,6 +2,7 @@ package com.furkanekiz.retrofitdemo
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import kotlinx.android.synthetic.main.ac_main.*
@@ -16,8 +17,19 @@ class ACMain : AppCompatActivity() {
             .getRetrofitInstance()
             .create(AlbumService::class.java)
 
+        //path parameter example
+        val pathResponse: LiveData<Response<AlbumsItem>> = liveData {
+            val response = retService.getAlbum(3)
+            emit(response)
+        }
+        pathResponse.observe(this) {
+            val title = it.body()?.title
+            Toast.makeText(applicationContext, title, Toast.LENGTH_LONG).show()
+        }
+
+
         val responseLiveData: LiveData<Response<Albums>> = liveData {
-            val response = retService.getAlbums()
+            val response = retService.getSortedAlbums(3)
             emit(response)
         }
         responseLiveData.observe(this) {
